@@ -33,8 +33,8 @@ const ChatContainer = ({ selectedUser, setSelectedUser }) => {
                     <div key={index} className={`flex items-end gap-2 mb-8 ${msg.senderId === '680f50e410f3cd28382ecf9' ? 'justify-end' : 'justify-start'}`}>
                         {msg.senderId !== '680f50e410f3cd28382ecf9' && (
                             <div className='text-center text-xs'>
-                                <img src={assets.profile_martin} className='w-7 h-7 rounded-full object-cover' alt="" />
-                                <p className='text-gray-500 mt-1'>{msg.createdAt}</p>
+                                <img src={selectedUser?.profile_martin || assets.profile_martin} className='w-7 h-7 rounded-full object-cover' alt="" />
+                                <p className='text-gray-500 mt-1'>{fomartMessageTime(msg.createdAt)}</p>
                             </div>
                         )}
                         
@@ -46,7 +46,7 @@ const ChatContainer = ({ selectedUser, setSelectedUser }) => {
                             </p>
                         )}
 
-                        {msg.senderId === '680f50e410f3cd28382ecf9' && (
+                       {msg.senderId === '680f50e410f3cd28382ecf9' && (
                             <div className='text-center text-xs'>
                                 <img src={assets.avatar_icon} className='w-7 h-7 rounded-full object-cover' alt="" />
                                 <p className='text-gray-500 mt-1'>{fomartMessageTime(msg.createdAt)}</p>
