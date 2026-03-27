@@ -22,7 +22,7 @@ export const getUserForSidebar = async (req, res) => {
             }
         })
 
-        await promises.all(promises);
+        await Promise.all(promises);
         res.json({ success: true, users: filteredUser, unseenMessages })
     } catch (error) {
         console.log(error.message);
@@ -38,7 +38,7 @@ export const getMessages = async (req, res) => {
         const messages = await Message.find({
             $or: [
                 { senderId: myId, receiverId: selectedUserId },
-                { senderId: selectedUserId, receiverId: selectedUserId },
+                { senderId: selectedUserId, receiverId: myId },
             ]
         })
 
@@ -52,7 +52,7 @@ export const getMessages = async (req, res) => {
 }
 
 //api to mark mesage as seen using message id
-export const markaMessageAsSeen = async (req, res) => {
+export const markMessageAsSeen = async (req, res) => {
     try {
         const { id } = req.params;
         await Message.findByIdAndUpdate(id, { seen: true })
@@ -76,7 +76,7 @@ export const sendMessage = async (req, res) => {
         imageUrl = uploadResponse.secure_url;
         }
 
-        const newMessage = Message.create({
+        const newMessage = await Message.create({
             senderId,
             receiverId,
             text,
@@ -85,7 +85,7 @@ export const sendMessage = async (req, res) => {
 
         // Emit the new mesage to the receiver's socket
         const receiverSocketId = userSocketMap[receiverId];
-        if(receiverId){
+        if(receiverSocketId){
             io.to(receiverSocketId).emit("newMessage", newMessage);
         }
 

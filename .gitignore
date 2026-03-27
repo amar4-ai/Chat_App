@@ -1,0 +1,22 @@
+# env files
+.env
+.env.*
+
+# client & server env (extra safety)
+client/.env
+server/.env
+
+# node modules
+node_modules/
+
+# build folders
+dist/
+build/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store

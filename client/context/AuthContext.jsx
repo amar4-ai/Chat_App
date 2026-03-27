@@ -6,21 +6,19 @@ import { io } from "socket.io-client";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.baseURL = backendUrl;
 
-
 export const AuthContext = createContext();
 
-
-export const AuthProider = ({ children }) => {
+export const AuthProvider = ({ children }) => {  // Fixed typo: AuthProider -> AuthProvider
 
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [authUser, setAuthUser] = useState(null);
     const [onlineUser, setOnlineUser] = useState([]);
     const [socket, setSocket] = useState(null);
 
-    //Check if user is authemticated and if so , set the user data and connect the socket
+    //Check if user is authenticated and if so, set the user data and connect the socket
     const checkAuth = async () => {
         try {
-            const { data } = await axios.get("/get/auth/check");
+            const { data } = await axios.get("/api/auth/check");  // Fixed: /get/auth/check -> /api/auth/check
             if (data.success) {
                 setAuthUser(data.user)
                 connectSocket(data.user)
@@ -31,36 +29,46 @@ export const AuthProider = ({ children }) => {
         }
     }
 
-    //Login function to handle user authentication and socket conncetion
+    //Login function to handle user authentication and socket connection
     const login = async (state, credentials) => {
         try {
             const { data } = await axios.post(`/api/auth/${state}`, credentials);
             if (data.success) {
-                setAuthUser(data.userData);
-                connectSocket(data.userData);
-                axios.defaults.headers.common[""] = data.token;
+                setAuthUser(data.user);
+                connectSocket(data.user);
+                axios.defaults.headers.common["token"] = data.token;  // Fixed: [""] -> ["token"]
                 setToken(data.token);
                 localStorage.setItem("token", data.token);
                 toast.success(data.message);
             } else {
-                toast.error(error.message);
+                toast.error(data.message);  // Fixed: error.message -> data.message
             }
         } catch (error) {
             toast.error(error.message);
         }
-
     }
 
-    // logout function to hande user logout and socket dissconnetion
-    const logout = async () => {
+    // logout function to handle user logout and socket disconnection
+// logout function to handle user logout and socket disconnection
+const logout = async () => {
+    try {
+        // Disconnect socket FIRST to trigger backend disconnect event
+        if (socket) {
+            socket.disconnect();
+        }
+        
+        // Clear local state
         localStorage.removeItem("token");
         setToken(null);
         setAuthUser(null);
         setOnlineUser([]);
         axios.defaults.headers.common["token"] = null;
+        
         toast.success("Logged out successfully");
-        socket.disconncet();
+    } catch (error) {
+        console.error("Logout error:", error);
     }
+}
 
     //update profile function to handle user profile updates
     const updateProfile = async (body) => {
@@ -75,24 +83,22 @@ export const AuthProider = ({ children }) => {
         }
     }
 
-
     //connect socket function to handle socket connection and online users updates
     const connectSocket = (userData) => {
-        if (!userData || socket?.conneted) return;
+        if (!userData || socket?.connected) return;  // Fixed: conneted -> connected
         const newSocket = io(backendUrl, {
             query: {
                 userId: userData._id,
-
             }
         });
         newSocket.connect();
         setSocket(newSocket);
 
-
         newSocket.on("getOnlineUsers", (userIds) => {
             setOnlineUser(userIds);
         })
     }
+
     useEffect(() => {
         if (token) {
             axios.defaults.headers.common["token"] = token;
@@ -108,8 +114,8 @@ export const AuthProider = ({ children }) => {
         login,
         logout,
         updateProfile
-
     }
+
     return (
         <AuthContext.Provider value={value}>
             {children}
