@@ -15,7 +15,7 @@ const RightSidebar = () => {
         )
     }, [messages])
     return selectedUser && (
-        <div className={`bg-[#8185B2]/10 text-white w-full relative overflow-y-scroll ${selectedUser ? "max-md:hidden" : ""}`}>
+        <div className={`bg-[#1e293b] text-white w-full relative overflow-y-scroll ${selectedUser ? "max-md:hidden" : ""}`}>
 
             <div className='pt-6 flex flex-col items-center gap-2 text-xs font-light mx-auto'>
 

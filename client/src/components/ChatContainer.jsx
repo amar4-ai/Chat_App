@@ -176,9 +176,9 @@ const ChatContainer = () => {
     }, [messages]);
 
     return selectedUser ? (
-        <div className='h-full overflow-y-scroll relative backdrop-blur-lg'>
+        <div className='h-full overflow-y-scroll bg-[#1e293b] relative backdrop-blur-lg'>
             {/* Header */}
-            <div className='flex items-center gap-3 py-3 px-4 border-b border-stone-500'>
+            <div className='flex items-center gap-3 py-3  px-4 border-b border-stone-500'>
                 <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className='w-8 h-8 rounded-full object-cover' />
                 <p className='flex-1 text-lg text-white flex items-center gap-2'>
                     {selectedUser.fullName} {onlineUser.includes(selectedUser._id) && <span className='w-2 h-2 rounded-full bg-green-500'></span>}
@@ -188,7 +188,7 @@ const ChatContainer = () => {
             </div>
 
             {/* Chat Area */}
-            <div className="flex flex-col h-[calc(100%-64px)] overflow-y-scroll p-3 pb-6">
+            <div className="flex flex-col h-[calc(100%-64px)]  overflow-y-scroll p-3 pb-6">
                 {messages.map((msg, index) => {
                     const isSender = msg.senderId === authUser._id;
                     return (
